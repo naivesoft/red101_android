@@ -57,6 +57,7 @@ public class HomeActivity extends FragmentActivity implements LocationSource, AM
         aMap.setLocationSource(this);// 设置定位监听
         mUiSettings.setLogoPosition(AMapOptions.LOGO_POSITION_BOTTOM_LEFT);// 设置地图logo显示在左下方
         mUiSettings.setMyLocationButtonEnabled(true); // 是否显示默认的定位按钮
+        mUiSettings.setScaleControlsEnabled(true);
         aMap.setMyLocationEnabled(true);// 是否可触发定位并显示定位层
         aMap.setMinZoomLevel(0.01f);
 
@@ -73,7 +74,7 @@ public class HomeActivity extends FragmentActivity implements LocationSource, AM
         aMap.setMyLocationEnabled(true);// 设置为true表示启动显示定位蓝点，false表示隐藏定位蓝点并不进行定位，默认是false。
         aMap.moveCamera(CameraUpdateFactory.zoomTo(Float.valueOf(5)));
 //        aMap.setMapType(AMap.MAP_TYPE_SATELLITE);
-        setMapCustomStyleFile(this);
+        //setMapCustomStyleFile(this);
 
     }
 
