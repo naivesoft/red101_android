@@ -1,62 +1,52 @@
 package com.naivesoft.android.see.mapblock;
 
-import java.util.ArrayList;
+import com.amap.api.maps.model.LatLng;
 
-/**
- * Created by admin on 2017/11/11.
- */
+import java.util.HashSet;
+import java.util.Set;
 
 public class MapBlockHelper {
 
-    private MapBlockHelper() {
+    public static Set<String> getLookBlockList(double scale, LatLng latlng) {
+        return getLookBlockList(scale, Math.round(latlng.longitude * Math.pow(10, 6)), Math.round(latlng.latitude * Math.pow(10, 6)));
     }
 
-    private static MapBlockHelper sInstance = new MapBlockHelper();
-
-    public final static MapBlockHelper getInstance() {
-        return sInstance;
-    }
-
-    public Long[] getLookBlockList(long scale, long lon, long lat) {
-        long groupFactor = MapBlockConfigUtil.getGroupFactorByScaleLevel(scale);
+    public static Set<String> getLookBlockList(double scale, long lon, long lat) {
+        Long groupFactor = MapBlockConfigUtil.getGroupFactorByScaleLevel(scale);
         long encodePosition = encode(lon, lat);
-        Long[] result = new Long[1];
-        ArrayList<Long> resultList = new ArrayList<>();
-        resultList.add(encodePosition / Math.round(groupFactor));
-        resultList.toArray(result);
-        return result;
+        Set<String> resultList = new HashSet<>();
+        resultList.add(Long.toHexString(encodePosition / groupFactor));
+        return resultList;
     }
 
-    public Long[] getInBlockList(long lon, long lat) {
+    public static Set<String> getInBlockList(long lon, long lat) {
         long encodePosition = encode(lon, lat);
         Long[] groupFactorList = MapBlockConfigUtil.getGroupFactorList();
-        Long[] result = new Long[groupFactorList.length];
-        ArrayList<Long> resultList = new ArrayList<>();
+        Set<String> resultList = new HashSet<>();
         for (Long groupFactor : groupFactorList) {
-            resultList.add(encodePosition / Math.round(groupFactor));
+            resultList.add(Long.toHexString(encodePosition / groupFactor));
         }
-        resultList.toArray(result);
-        return result;
+        return resultList;
     }
 
-    private long encode(long lon, long lat) {
+    private static long encode(long lon, long lat) {
         long area = 0;
         //先设置经度,避免负数,直接加180
         long newLon = lon + 180000000;
-        for (int i = 0; i < 64; i += 2) {
+        for (int i = 0; i < 32; i += 1) {
             if (theBitTrue(newLon, i)) {
-                area = setTheBitTrue(area, i);
+                area = setTheBitTrue(area, 2 * i);
             } else {
-                area = setTheBitFalse(area, i);
+                area = setTheBitFalse(area, 2 * i);
             }
         }
         //再设置维度
         long newLat = lat + 90000000;
-        for (int i = 0; i < 64; i += 2) {
+        for (int i = 0; i < 32; i += 1) {
             if (theBitTrue(newLat, i)) {
-                area = setTheBitTrue(area, i + 1);
+                area = setTheBitTrue(area, 2 * i + 1);
             } else {
-                area = setTheBitFalse(area, i + 1);
+                area = setTheBitFalse(area, 2 * i + 1);
             }
         }
         return area;
@@ -66,7 +56,7 @@ public class MapBlockHelper {
      * 判断num上  第point位上是否为1
      * point 从0开始.
      */
-    private boolean theBitTrue(long num, int point) {
+    private static boolean theBitTrue(long num, int point) {
         long bits = 1l << point;
         return (bits & num) == bits;
     }
@@ -74,14 +64,14 @@ public class MapBlockHelper {
     /**
      * 将num的第point位设置成1,然后返回
      */
-    private long setTheBitTrue(long num, int point) {
+    private static long setTheBitTrue(long num, int point) {
         return num |= (1l << point);
     }
 
     /**
      * 将num的第point位设置成0,然后返回
      */
-    private long setTheBitFalse(long num, int point) {
+    private static long setTheBitFalse(long num, int point) {
         return num &= ~(1l << point);
     }
 

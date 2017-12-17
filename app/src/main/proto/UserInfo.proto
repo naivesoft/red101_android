@@ -1,0 +1,17 @@
+syntax = "proto3";
+package client;
+
+option java_package = "com.naivesoft.android.see.protobuf";
+option java_outer_classname = "UserInfo";
+
+message UserInfoRequest {
+    string socketId = 1;
+    string userId = 2;
+    string deviceId = 3;
+
+}
+
+message UserInfoResponse {
+    string userId = 1;
+    string deviceId = 2;
+}

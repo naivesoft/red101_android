@@ -8,19 +8,8 @@ import java.util.ArrayList;
 
 public class MapBlockConfigUtil {
 
-    public static Long[] getGroupFactorList() {
-        return GROUP_FACTOR_LIST;
-    }
-    public static Long getGroupFactorByScaleLevel(long scaleLevel) {
-        for (MapBlockConfig item : MapBlockConfig.values()) {
-            if (item.isMatchScale(scaleLevel)) {
-                return item.getGroupFactor();
-            }
-        }
-        return MapBlockConfig.DEFAULT.getGroupFactor();
-    }
-
     private static Long[] GROUP_FACTOR_LIST = new Long[MapBlockConfig.values().length - 1];
+
     static {
         ArrayList<Long> result = new ArrayList<>();
         for (MapBlockConfig item : MapBlockConfig.values()) {
@@ -29,6 +18,19 @@ public class MapBlockConfigUtil {
             }
         }
         result.toArray(GROUP_FACTOR_LIST);
+    }
+
+    public static Long[] getGroupFactorList() {
+        return GROUP_FACTOR_LIST;
+    }
+
+    public static Long getGroupFactorByScaleLevel(double scaleLevel) {
+        for (MapBlockConfig item : MapBlockConfig.values()) {
+            if (item.isMatchScale(scaleLevel)) {
+                return item.getGroupFactor();
+            }
+        }
+        return MapBlockConfig.DEFAULT.getGroupFactor();
     }
 
     public enum MapBlockConfig {
@@ -45,18 +47,19 @@ public class MapBlockConfigUtil {
         DEFAULT(1 * Math.pow(10, 10), -1, -1);
 
         private double mGroupFactor;
-        private long mMinScaleLevelExclude;
-        private long mMaxScaleLevelInclude;
+        private double mMinScaleLevelExclude;
+        private double mMaxScaleLevelInclude;
 
-        private MapBlockConfig(double groupFactor, long minScaleLevelExclude, long maxScaleLevelInclude) {
+        MapBlockConfig(double groupFactor, double minScaleLevelExclude, double maxScaleLevelInclude) {
             mGroupFactor = groupFactor;
             mMinScaleLevelExclude = minScaleLevelExclude;
             mMaxScaleLevelInclude = maxScaleLevelInclude;
         }
         public long getGroupFactor() {
-            return Math.round(mGroupFactor);
+            return new Double(mGroupFactor).longValue();
         }
-        public boolean isMatchScale(long currentScale) {
+
+        public boolean isMatchScale(double currentScale) {
             return currentScale > mMinScaleLevelExclude && currentScale <= mMaxScaleLevelInclude;
         }
     }

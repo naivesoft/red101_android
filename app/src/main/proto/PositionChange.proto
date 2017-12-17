@@ -1,0 +1,27 @@
+syntax = "proto3";
+package client;
+
+option java_package = "com.naivesoft.android.see.protobuf";
+option java_outer_classname = "PositionChange";
+
+message PositionChangedRequest {
+    string socketId = 1;
+    string userId = 2;
+    string deviceId = 3;
+    double longitude = 4;
+    double latitude = 5;
+    repeated string currentBlock = 6;
+    repeated string lookBlock = 7;
+    string userIdWithPosition = 8;
+}
+
+message PositionChangedResponse {
+
+    message ActivePointInMap {
+        string userIdWithPosition = 1;
+        string action = 2;
+    }
+
+    string userId = 1;
+    repeated ActivePointInMap blockListData = 2;
+}
