@@ -8,4 +8,10 @@
         android:layout_height="match_parent"
         android:background="@mipmap/mapping_background" />
 
+    <com.naivesoft.android.see.widget.HeartLayout
+        android:id="@+id/heart_layout"
+        android:layout_width="100dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="bottom|end" />
+
 </FrameLayout>
