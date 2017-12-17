@@ -1,6 +1,7 @@
 package com.naivesoft.android.see;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.maps.model.VisibleRegion;
 import com.naivesoft.android.see.amap.AMapHelpers;
+import com.naivesoft.android.see.anim.CircularAnim;
 import com.naivesoft.android.see.mapblock.MapBlockHelper;
 import com.naivesoft.android.see.model.UserPositionInfo;
 import com.naivesoft.android.see.socket.RealTimePositionSocket;
@@ -58,6 +60,7 @@ public class HomeActivity extends FragmentActivity implements LocationSource, AM
     private UiSettings mUiSettings;
 
     private View mLocationButton;
+    private View mStartMappingButton;
 
     private AMapLocationClient mlocationClient;
     private AMapLocationClientOption mLocationOption;
@@ -101,6 +104,12 @@ public class HomeActivity extends FragmentActivity implements LocationSource, AM
         layoutParams.rightMargin = AndroidUtils.dip2px(this, 20);
         mLocationButton.setLayoutParams(layoutParams);
         mLocationButton.setOnClickListener(this);
+
+        mStartMappingButton = findViewById(R.id.start_mapping);
+        layoutParams = (FrameLayout.LayoutParams) mStartMappingButton.getLayoutParams();
+        layoutParams.bottomMargin = AndroidUtils.dip2px(this, 20) + AndroidUtils.getNavigationBarHeight(this);
+        mStartMappingButton.setLayoutParams(layoutParams);
+        mStartMappingButton.setOnClickListener(this);
 
         HomeActivityPermissionsDispatcher.initWithPermissionCheck(this);
     }
@@ -361,7 +370,16 @@ public class HomeActivity extends FragmentActivity implements LocationSource, AM
             } else {
                 userWantToMoveToCurrentPosition = true;
             }
-
+        } else if (id == R.id.start_mapping) {
+            // jump to mappping activity
+            CircularAnim.fullActivity(HomeActivity.this, view)
+                    .colorOrImageRes(R.mipmap.mapping_background)
+                    .go(new CircularAnim.OnAnimationEndListener() {
+                        @Override
+                        public void onAnimationEnd() {
+                            startActivity(new Intent(HomeActivity.this, MappingAcitivity.class));
+                        }
+                    });
         }
     }
 }
